@@ -4,10 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3306/twitter_clone
     username: lionel
     password: Mmh28803#
-jpa:
-  show-sql: true
-  hibernate:
-    ddl-auto: create
-  properties:
+  jpa:
+    show-sql: false
     hibernate:
-      dialect: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
