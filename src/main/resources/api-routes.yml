@@ -1,0 +1,25 @@
+#for account controller
+api.getAccounts: /accounts
+  registerAccount: /accounts
+  verifyEmail: /verify-email
+  loginAccount: /login
+  editAccount: /accounts/{accountId} 
+  configureAccount : /accounts/{accountId}/configure
+  followAccount : /follow
+  unfollowAccount: /unfollow
+#for post controller
+  getTweets: /tweets
+  createTweet: /tweets
+  editTweet: /tweets/{tweetId}
+  deleteTweet: /tweets/{tweetId}
+  retweetTweet: /retweet
+  reactTweet: /react-tweet
+  configureTweet: /tweets/{tweetId}/configure
+#for comment controller
+  createComment: /comments
+  getTweetComments: /tweets/{tweetId}/comments
+  editComment: /comments/{commentId}
+  deleteComment : /comments/{commentId}
+  reactComment: /react-comment
+  
+  
