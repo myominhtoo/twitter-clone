@@ -52,4 +52,13 @@ public class Post {
     @JoinColumn( name = "account_id" )
     private Account createdAccount;
 
+    @Column( name = "tweet_count" )
+    private Integer tweetCount;
+
+    @Column( name = "comment_count" )
+    private Integer commentCount;
+
+    @Column( name = "reaction_count" )
+    private Integer reactionCount;
+
 }
