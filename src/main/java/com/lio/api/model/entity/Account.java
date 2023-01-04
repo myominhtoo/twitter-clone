@@ -11,6 +11,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import static com.lio.api.model.constant.Messages.REQUIRED_FIELED;
+import com.lio.api.controller.ResourceConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,26 +28,26 @@ public class Account {
     private String id;
 
     @Column( name = "first_name" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELED )
+    @NotBlank( message =  REQUIRED_FIELED )
     private String firstName;
 
     @Column( name = "last_name" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELED )
+    @NotBlank( message =  REQUIRED_FIELED )
     private String lastName;
 
     @Transient
     private String fullName;
 
     @Column( name = "email" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELED )
+    @NotBlank( message =  REQUIRED_FIELED )
     private String email;
 
     @Column( name = "password" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELED )
+    @NotBlank( message =  REQUIRED_FIELED )
     private String password;
 
     @Transient
@@ -64,8 +66,8 @@ public class Account {
     private String bios;  
 
     @Column( name = "device_id" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELED )
+    @NotBlank( message =  REQUIRED_FIELED )
     private String deviceId;
 
     @Column( name = "created_date" )
@@ -79,5 +81,11 @@ public class Account {
 
     @Column( name = "last_logged_in_device_id" )
     private LocalDateTime lastLoggedInDeviceId;
+
+    @Column( name = "verification_code" )
+    private Integer verificationCode;
+
+    @Column( name = "has_verified_code" )
+    private Boolean hasVerifiedCode;
 
 }
