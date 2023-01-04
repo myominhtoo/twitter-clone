@@ -4,6 +4,7 @@ import com.lio.api.exception.custom.Index;
 import com.lio.api.model.entity.Account;
 import com.lio.api.service.interfaces.AccountService;
 import com.lio.api.model.dto.ApiResponse;
+import com.lio.api.util.AppUtil;
 import com.lio.api.util.CustomResponse;
 import static com.lio.api.model.constant.Messages.*;
 
@@ -42,15 +43,11 @@ public class AccountController extends ResourceConfig {
             BindingResult bindingResult
     ) throws Index.DuplicateAccountException {
         if( bindingResult.hasErrors() ){
-            Map<String,String> errorsMap = new HashMap<>();
-
-            bindingResult.getFieldErrors()
-                    .stream()
-                    .forEach( error -> {
-                        errorsMap.put( error.getField() , error.getDefaultMessage() );
-                    });
-
-            return CustomResponse.getErrorResponse( null , INVALID_REQUEST , errorsMap  );
+            return CustomResponse.getErrorResponse(
+                    null ,
+                    INVALID_REQUEST ,
+                    AppUtil.getErrorsMapFromBindingResults(bindingResult)
+            );
         }
         Account createdAccount = this.accountService.createAccount(account);
         return CustomResponse.getResponse( createdAccount , SUCCESS_CREATED_ACCOUNT );
@@ -80,6 +77,47 @@ public class AccountController extends ResourceConfig {
             return CustomResponse.getErrorResponse( null , INVALID_REQUEST , errorMap );
         }
         return CustomResponse.getResponse( null ,null );
+    }
+
+    /*
+     for getting all accounts
+     later, this will be updated with search algos
+     route => /api/v1/accounts (GET)
+     */
+    @GetMapping( value = "${getAccounts}" )
+    public ResponseEntity<ApiResponse<Object>> getAllAccounts(){
+        return CustomResponse.getResponse(
+                this.accountService.getAllAccounts() ,
+                REQUEST_SUCCESS
+        );
+    }
+
+    /*
+     for updating profile
+     will need confirmPassword to complete action
+     route => /api/v1/accounts/{accountId} (PUT)->body(account)
+     must same accountId with account.id
+     */
+    @PutMapping( value = "${editAccount}" )
+    public ResponseEntity<ApiResponse<Object>> putEditAccountProfile(
+            @PathVariable("accountId") String accountId ,
+            @Valid @RequestBody Account editedAccount ,
+            BindingResult bindingResult
+    ) throws Index.InvalidRequestExeption {
+        if( bindingResult.hasErrors() ){
+           return CustomResponse.getErrorResponse(
+                   null ,
+                   INVALID_REQUEST ,
+                   AppUtil.getErrorsMapFromBindingResults(bindingResult)
+           );
+        }
+
+        Account updatedAcc = this.accountService.editAccount(
+                accountId ,
+                editedAccount
+        );
+
+        return CustomResponse.getResponse( updatedAcc , SUCCESS_DONE );
     }
 
 }

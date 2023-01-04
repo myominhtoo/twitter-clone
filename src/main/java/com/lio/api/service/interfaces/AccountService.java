@@ -18,7 +18,7 @@ public interface AccountService {
 
     void sendVerification( String email );
 
-    Account editAccount( Account account );
+    Account editAccount( String accountId , Account account ) throws Index.InvalidRequestExeption;
 
     Boolean followAccount( AccountFollowDTO accountFollowDTO );
 

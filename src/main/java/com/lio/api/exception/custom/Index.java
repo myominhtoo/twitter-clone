@@ -11,4 +11,13 @@ public class Index {
         }
     }
 
+    /*
+     for all invalid requests
+     */
+    public static class InvalidRequestExeption extends Exception{
+        public InvalidRequestExeption( String message ){
+            super(message);
+        }
+    }
+
 }

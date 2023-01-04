@@ -17,6 +17,7 @@ import com.lio.api.service.interfaces.AccountService;
 import org.springframework.stereotype.Service;
 
 import static com.lio.api.model.constant.Index.*;
+import static com.lio.api.model.constant.Messages.INVALID_REQUEST;
 
 @Slf4j
 @Service("accountService")
@@ -51,8 +52,30 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account editAccount(Account account) {
-        return null;
+    public Account editAccount(
+            String accountId ,
+            Account account
+    ) throws Index.InvalidRequestExeption {
+
+        Optional<Account> savedAccOptional = this.accountRepository.findById(accountId);
+
+        if( !accountId.equals(account.getId()) || !savedAccOptional.isPresent() ){
+            throw new Index.InvalidRequestExeption( INVALID_REQUEST );
+        }
+
+        Account savedAccObject = savedAccOptional.get();
+        savedAccObject.setAge(account.getAge());
+        savedAccObject.setEmail(account.getEmail());
+        savedAccObject.setFirstName(account.getFirstName());
+        savedAccObject.setDeviceId(account.getDeviceId());
+        savedAccObject.setLastName(account.getLastName());
+        savedAccObject.setBios(account.getBios());
+        savedAccObject.setUpdatedDate(LocalDateTime.now());
+        savedAccObject.setDob(account.getDob());
+        savedAccObject.setPhone(account.getPhone());
+
+        return this.accountRepository.save(savedAccObject);
+
     }
 
     @Override
@@ -62,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAllAccounts() {
-        return null;
+       return this.accountRepository.findAll();
     }
 
     @Override
