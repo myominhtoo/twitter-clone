@@ -13,6 +13,7 @@ import static com.lio.api.model.constant.Messages.INVALID_REQUEST;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -103,7 +104,7 @@ public class AccountController extends ResourceConfig {
             @PathVariable("accountId") String accountId ,
             @Valid @RequestBody Account editedAccount ,
             BindingResult bindingResult
-    ) throws Index.InvalidRequestExeption {
+    ) throws Index.InvalidRequestException {
         if( bindingResult.hasErrors() ){
            return CustomResponse.getErrorResponse(
                    null ,
@@ -118,6 +119,28 @@ public class AccountController extends ResourceConfig {
         );
 
         return CustomResponse.getResponse( updatedAcc , SUCCESS_DONE );
+    }
+
+    /*
+      for login acount
+      will get jwt token if valid
+      route => /api/v1/login (POST)->body(account)
+     */
+    @PostMapping( value = "${loginAccount}" )
+    public ResponseEntity<ApiResponse<Object>> postLoginAccount( @RequestBody Account account )
+            throws Index.InvalidRequestException {
+        Account validAccount = this.accountService.login( account );
+
+        /*
+         to generate jwt and add to headers
+         */
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        return CustomResponse.getResponse(
+                validAccount ,
+                httpHeaders ,
+                REQUEST_SUCCESS
+        );
     }
 
 }

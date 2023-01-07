@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static com.lio.api.model.constant.Messages.UNEXPECTED_ERROR;
 import static com.lio.api.exception.custom.Index.DuplicateAccountException;
-import static com.lio.api.exception.custom.Index.InvalidRequestExeption;
+import static com.lio.api.exception.custom.Index.InvalidRequestException;
 
 @RestControllerAdvice
 public class Index {
@@ -39,8 +39,8 @@ public class Index {
     /*
      for all invalid requests
      */
-    @ExceptionHandler( { InvalidRequestExeption.class } )
-    public ResponseEntity<ApiResponse<Object>> invalidRequestHandler( InvalidRequestExeption e ){
+    @ExceptionHandler( { InvalidRequestException.class } )
+    public ResponseEntity<ApiResponse<Object>> invalidRequestHandler( InvalidRequestException e ){
         Map<String,String> errorMap = new HashMap<>();
         errorMap.put("message",e.getMessage());
         return CustomResponse.getErrorResponse( null , e.getMessage() , errorMap );

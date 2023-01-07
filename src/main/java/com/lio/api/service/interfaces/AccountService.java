@@ -8,21 +8,26 @@ import com.lio.api.model.entity.Account;
 
 public interface AccountService {
 
-    Account createAccount( Account account  ) throws Index.DuplicateAccountException;
+    Account createAccount( Account account  )
+            throws Index.DuplicateAccountException;
     
     Boolean isDuplicateAccount( Account account );
 
     List<Account> getAllAccounts();
 
-    Account login( Account account );
+    Account login( Account account )
+            throws Index.InvalidRequestException;
 
     void sendVerification( String email );
 
-    Account editAccount( String accountId , Account account ) throws Index.InvalidRequestExeption;
+    Account editAccount( String accountId , Account account )
+            throws Index.InvalidRequestException ;
 
-    Boolean followAccount( AccountFollowDTO accountFollowDTO );
+    Boolean followAccount( AccountFollowDTO accountFollowDTO )
+            throws Index.InvalidRequestException;
 
-    Boolean unfollowAccount( AccountFollowDTO accountFollowDTO );
+    Boolean unfollowAccount( AccountFollowDTO accountFollowDTO )
+            throws Exception;
 
     Boolean verifyAccount( String accountId , String email , Integer verificationCode );
 

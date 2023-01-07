@@ -19,4 +19,6 @@ public class Index {
 
     public static Integer VERIFICATION_CODE_BOUND = 1000000;
 
+    public static String BEARER = "Bearer ";
+
 }
