@@ -20,4 +20,13 @@ public class Index {
         }
     }
 
+    /*
+     for duplicate account configuration creation
+     */
+    public static class DuplicateAccountConfigurationException extends Exception {
+        public DuplicateAccountConfigurationException( String message ){
+            super(message);
+        }
+    }
+
 }

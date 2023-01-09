@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import static com.lio.api.model.constant.Messages.REQUIRED_FIELED;
+import static com.lio.api.model.constant.Messages.REQUIRED_FIELD;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,26 +27,26 @@ public class Account {
     private String id;
 
     @Column( name = "first_name" )
-    @NotNull( message = REQUIRED_FIELED )
-    @NotBlank( message =  REQUIRED_FIELED )
+    @NotNull( message = REQUIRED_FIELD)
+    @NotBlank( message = REQUIRED_FIELD)
     private String firstName;
 
     @Column( name = "last_name" )
-    @NotNull( message = REQUIRED_FIELED )
-    @NotBlank( message =  REQUIRED_FIELED )
+    @NotNull( message = REQUIRED_FIELD)
+    @NotBlank( message = REQUIRED_FIELD)
     private String lastName;
 
     @Transient
     private String fullName;
 
     @Column( name = "email" )
-    @NotNull( message = REQUIRED_FIELED )
-    @NotBlank( message =  REQUIRED_FIELED )
+    @NotNull( message = REQUIRED_FIELD)
+    @NotBlank( message = REQUIRED_FIELD)
     private String email;
 
     @Column( name = "password" )
-    @NotNull( message = REQUIRED_FIELED )
-    @NotBlank( message =  REQUIRED_FIELED )
+    @NotNull( message = REQUIRED_FIELD)
+    @NotBlank( message = REQUIRED_FIELD)
     private String password;
 
     @Transient
@@ -65,8 +65,8 @@ public class Account {
     private String bios;  
 
     @Column( name = "device_id" )
-    @NotNull( message = REQUIRED_FIELED )
-    @NotBlank( message =  REQUIRED_FIELED )
+    @NotNull( message = REQUIRED_FIELD)
+    @NotBlank( message = REQUIRED_FIELD)
     private String deviceId;
 
     @Column( name = "created_date" )

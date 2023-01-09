@@ -4,7 +4,7 @@ registerAccount: /accounts
 verifyEmail: /verify-email
 loginAccount: /login
 editAccount: /accounts/{accountId}
-configureAccount : /accounts/{accountId}/configure
+accountConfigurations: /accounts/{accountId}/configurations
 followAccount : /follow-account
 unfollowAccount: /unfollow-account
 #for post controller

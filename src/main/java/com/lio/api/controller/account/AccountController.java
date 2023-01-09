@@ -3,6 +3,8 @@ package com.lio.api.controller.account;
 import com.lio.api.exception.custom.Index;
 import com.lio.api.model.dto.AccountFollowDTO;
 import com.lio.api.model.entity.Account;
+import com.lio.api.model.entity.AccountConfigurations;
+import com.lio.api.service.interfaces.AccountConfigService;
 import com.lio.api.service.interfaces.AccountService;
 import com.lio.api.model.dto.ApiResponse;
 import com.lio.api.util.AppUtil;
@@ -29,10 +31,15 @@ import java.util.Map;
 public class AccountController extends ResourceConfig {
 
     private AccountService accountService;
+    private AccountConfigService accountConfigService;
 
     @Autowired
-    public AccountController( AccountService accountService ){
+    public AccountController(
+            AccountService accountService ,
+            AccountConfigService accountConfigService
+            ){
         this.accountService = accountService;
+        this.accountConfigService = accountConfigService;
     }
 
     /*
@@ -43,7 +50,8 @@ public class AccountController extends ResourceConfig {
     public ResponseEntity<ApiResponse<Object>> postRegisterNewAccount(
             @Valid @RequestBody Account account ,
             BindingResult bindingResult
-    ) throws Index.DuplicateAccountException {
+    ) throws Index.DuplicateAccountException, Index.InvalidRequestException,
+            Index.DuplicateAccountConfigurationException {
         if( bindingResult.hasErrors() ){
             return CustomResponse.getErrorResponse(
                     null ,
@@ -52,6 +60,11 @@ public class AccountController extends ResourceConfig {
             );
         }
         Account createdAccount = this.accountService.createAccount(account);
+
+        this.accountConfigService.createAccountConfiguration(
+                this.accountService.getAccount(createdAccount.getId())
+        );
+
         return CustomResponse.getResponse( createdAccount , SUCCESS_CREATED_ACCOUNT );
     }
 
@@ -128,14 +141,16 @@ public class AccountController extends ResourceConfig {
       route => /api/v1/login (POST)->body(account)
      */
     @PostMapping( value = "${loginAccount}" )
-    public ResponseEntity<ApiResponse<Object>> postLoginAccount( @RequestBody Account account )
+    public ResponseEntity<ApiResponse<Object>> postLoginAccount(
+            @RequestBody Account account
+    )
             throws Index.InvalidRequestException {
         Account validAccount = this.accountService.login( account );
 
         /*
          to generate jwt and add to headers
          */
-        HttpHeaders httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = this.accountService.getAuthTokenHeader( account );
 
         return CustomResponse.getResponse(
                 validAccount ,
@@ -150,7 +165,9 @@ public class AccountController extends ResourceConfig {
      route => /api/v1/follow-account (POST)->body(accountFollowDTO)
      */
     @PostMapping( value = "${followAccount}" )
-    public ResponseEntity<ApiResponse<Object>> postFollowAccount( @RequestBody AccountFollowDTO accountFollowDTO )
+    public ResponseEntity<ApiResponse<Object>> postFollowAccount(
+            @RequestBody AccountFollowDTO accountFollowDTO
+    )
             throws Index.InvalidRequestException {
         Boolean followStatus = this.accountService.followAccount( accountFollowDTO );
 
@@ -165,12 +182,44 @@ public class AccountController extends ResourceConfig {
      route => /api/v1/unfollow-account (POST)->body(accountFollowDTO)
      */
     @PostMapping( value = "${unfollowAccount}" )
-    public ResponseEntity<ApiResponse<Object>> postUnfollowAccount( @RequestBody AccountFollowDTO accountFollowDTO ) throws Exception {
+    public ResponseEntity<ApiResponse<Object>> postUnfollowAccount(
+            @RequestBody AccountFollowDTO accountFollowDTO
+    ) throws Exception {
          Boolean unfollowStatus = this.accountService.unfollowAccount( accountFollowDTO );
 
          return unfollowStatus
                  ? CustomResponse.getResponse( null , SUCCESS_DONE )
                  : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null );
+    }
+
+    /*
+     for getting configurations for account
+     route => /api/v1/accounts/{accountId}/configurations (GET)->path(accountId)
+     */
+    @GetMapping( value = "${accountConfigurations}" )
+    public ResponseEntity<ApiResponse<Object>> getAccountConfigurations(
+            @PathVariable("accountId") String accountId
+    ) throws Index.InvalidRequestException {
+        AccountConfigurations accountConfigurations = this.accountConfigService
+                .getAccountConfiguration( accountId );
+        return CustomResponse.getResponse( accountConfigurations , REQUEST_SUCCESS );
+    }
+
+    /*
+        for editing account configurations
+        route => /api/v1/accounts/{accountId}/configurations (PUT)->body(accountConfiguration)
+     */
+    @PutMapping( value = "${accountConfigurations}" )
+    public ResponseEntity<ApiResponse<Object>> updateAccountConfigurations(
+            @PathVariable("accountId") String accountId ,
+            @RequestBody AccountConfigurations accountConfigurations
+    ) throws Index.InvalidRequestException {
+        AccountConfigurations updatedAccConfig = this.accountConfigService
+                .configureAccount( accountId , accountConfigurations );
+        if( updatedAccConfig == null ){
+            return CustomResponse.getErrorResponse( null , REQUEST_FAILED , null );
+        }
+        return CustomResponse.getResponse( updatedAccConfig , SUCCESS_DONE );
     }
 
 }

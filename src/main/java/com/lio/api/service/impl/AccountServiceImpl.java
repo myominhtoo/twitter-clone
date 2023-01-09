@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lio.api.configuration.CustomUserDetails;
-import com.lio.api.controller.account.AccountController;
 import com.lio.api.exception.custom.Index;
 import com.lio.api.model.entity.AccountFollowAccount;
 import com.lio.api.repository.AccountFollowAccountRepository;
+import com.lio.api.service.interfaces.JwtTokenService;
 import com.lio.api.util.Generator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,17 +41,21 @@ public class AccountServiceImpl implements AccountService , UserDetailsService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final JwtTokenService jwtTokenService;
+
     @Autowired
     public AccountServiceImpl( 
         AccountRepository accountRepository ,
         BCryptPasswordEncoder passwordEncoder ,
         AccountFollowAccountRepository accFollowAccRepository ,
-        AuthenticationManager authenticationManager
+        AuthenticationManager authenticationManager ,
+        JwtTokenService jwtTokenService
     ){
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.accFollowAccRepository = accFollowAccRepository;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -224,8 +229,26 @@ public class AccountServiceImpl implements AccountService , UserDetailsService {
                 throw new Exception("Error");
             }
         }
-
         return false;
+    }
+
+    @Override
+    public HttpHeaders getAuthTokenHeader(Account account) {
+        HttpHeaders httpHeader = new HttpHeaders();
+        httpHeader.add(
+                HttpHeaders.AUTHORIZATION ,
+                this.jwtTokenService.generateToken( account.getId() , account.getEmail() )
+        );
+        return httpHeader;
+    }
+
+    @Override
+    public Account getAccount(String accountId) throws Index.InvalidRequestException {
+        Optional<Account> accountOptional = this.accountRepository.findById( accountId );
+        if( !accountOptional.isPresent() ){
+            throw  new Index.InvalidRequestException( INVALID_REQUEST );
+        }
+        return accountOptional.get();
     }
 
 }

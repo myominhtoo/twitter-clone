@@ -2,8 +2,11 @@ package com.lio.api.model.constant;
 
 public class Messages {
 
-    public static final String REQUIRED_FIELED = "This field is required!";
+    public static final String REQUIRED_FIELD = "This field is required!";
 
+    public static final String NEED_TO_CHECK = "This field needs to check!";
+
+    public static final String DUPLICATE_ACCOUNT_CONFIG = "Duplicate Account Configuration!";
     public static final String INVALID_REQUEST = "Invalid Request!";
 
     public static final String REQUEST_SUCCESS = "Success!";

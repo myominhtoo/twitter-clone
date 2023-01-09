@@ -5,6 +5,7 @@ import java.util.List;
 import com.lio.api.exception.custom.Index;
 import com.lio.api.model.dto.AccountFollowDTO;
 import com.lio.api.model.entity.Account;
+import org.springframework.http.HttpHeaders;
 
 public interface AccountService {
 
@@ -30,5 +31,10 @@ public interface AccountService {
             throws Exception;
 
     Boolean verifyAccount( String accountId , String email , Integer verificationCode );
+
+    HttpHeaders getAuthTokenHeader( Account account );
+
+    Account getAccount( String accountId )
+            throws Index.InvalidRequestException;
 
 }
