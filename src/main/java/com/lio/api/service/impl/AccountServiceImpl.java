@@ -179,7 +179,13 @@ public class AccountServiceImpl implements AccountService , UserDetailsService {
         Optional<Account> toAccOptional = this.accountRepository
                 .findById(accountFollowDTO.getTo().getId());
 
-        if( !fromAccOptional.isPresent() || !toAccOptional.isPresent() ){
+        if( !fromAccOptional.isPresent() ||
+                !toAccOptional.isPresent() ||
+                this.accFollowAccRepository.findByFromAccountIdAndToAccountId(
+                        accountFollowDTO.getFrom().getId() ,
+                        accountFollowDTO.getTo().getId()
+                ) != null
+        ){
             throw new Index.InvalidRequestException( INVALID_REQUEST );
         }
 

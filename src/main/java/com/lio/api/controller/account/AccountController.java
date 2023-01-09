@@ -1,6 +1,7 @@
 package com.lio.api.controller.account;
 
 import com.lio.api.exception.custom.Index;
+import com.lio.api.model.dto.AccountFollowDTO;
 import com.lio.api.model.entity.Account;
 import com.lio.api.service.interfaces.AccountService;
 import com.lio.api.model.dto.ApiResponse;
@@ -141,6 +142,35 @@ public class AccountController extends ResourceConfig {
                 httpHeaders ,
                 REQUEST_SUCCESS
         );
+    }
+
+    /*
+     for following account
+     won't be able to follow for your account self
+     route => /api/v1/follow-account (POST)->body(accountFollowDTO)
+     */
+    @PostMapping( value = "${followAccount}" )
+    public ResponseEntity<ApiResponse<Object>> postFollowAccount( @RequestBody AccountFollowDTO accountFollowDTO )
+            throws Index.InvalidRequestException {
+        Boolean followStatus = this.accountService.followAccount( accountFollowDTO );
+
+        return followStatus
+                ? CustomResponse.getResponse( null , SUCCESS_DONE )
+                : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null );
+    }
+
+    /*
+     for un-following account
+     won't be able to unfollow account without following to that account
+     route => /api/v1/unfollow-account (POST)->body(accountFollowDTO)
+     */
+    @PostMapping( value = "${unfollowAccount}" )
+    public ResponseEntity<ApiResponse<Object>> postUnfollowAccount( @RequestBody AccountFollowDTO accountFollowDTO ) throws Exception {
+         Boolean unfollowStatus = this.accountService.unfollowAccount( accountFollowDTO );
+
+         return unfollowStatus
+                 ? CustomResponse.getResponse( null , SUCCESS_DONE )
+                 : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null );
     }
 
 }
