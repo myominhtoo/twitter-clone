@@ -14,7 +14,7 @@ createTweet: /tweets
 editTweet: /tweets/{tweetId}
 deleteAccountTweet: /account/{accountId}/tweets/{tweetId}
 retweetPost: /retweet
-reactTweet: /react-tweet
+toggleReactionTweet: /react-tweet
 configureTweet: /tweets/{tweetId}/configure
 #for comment controller
 createComment: /comments

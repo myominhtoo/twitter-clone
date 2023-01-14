@@ -1,16 +1,12 @@
 package com.lio.api.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table( name = "account_react_post" )
@@ -30,5 +26,8 @@ public class AccountReactPost {
     @OneToOne
     @JoinColumn( name = "post_id" )
     private Post post;
+
+    @Column( name = "created_date" )
+    private LocalDateTime createdDate;
 
 }

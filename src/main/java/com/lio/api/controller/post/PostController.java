@@ -3,7 +3,11 @@ package com.lio.api.controller.post;
 import com.lio.api.controller.ResourceConfig;
 import com.lio.api.exception.custom.Index;
 import com.lio.api.model.dto.ApiResponse;
+import com.lio.api.model.dto.ReactionDTO;
+import com.lio.api.model.dto.RetweetPostDTO;
+import com.lio.api.model.entity.AccountTweetPost;
 import com.lio.api.model.entity.Post;
+import com.lio.api.model.entity.PostConfigurations;
 import com.lio.api.service.interfaces.AccountService;
 import com.lio.api.service.interfaces.PostService;
 import com.lio.api.util.AppUtil;
@@ -112,5 +116,81 @@ public class PostController extends ResourceConfig {
         );
     }
 
+    /*
+     for retweeting posts
+     route => /api/v1/retweet => (POST)->body(retweetPostDTO)
+     */
+    @PostMapping( value = "${retweetPost}" )
+    public ResponseEntity<ApiResponse<Object>> retweetPost(
+           @Valid @RequestBody RetweetPostDTO retweetPostDTO ,
+           BindingResult bindingResult
+    ) throws Index.InvalidRequestException {
+        if( bindingResult.hasErrors() ){
+            return CustomResponse.getErrorResponse(
+                    null ,
+                    REQUEST_FAILED ,
+                    AppUtil.getErrorsMapFromBindingResults(bindingResult)
+            );
+        }
+
+        Boolean tweetStatus = this.postService.retweetPost(retweetPostDTO);
+
+        return ( tweetStatus
+                ? CustomResponse.getResponse( null , SUCCESS_DONE )
+                : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null )
+        );
+    }
+
+
+    /*
+     for configure tweet setting
+     route => /tweets/{tweetId}/configure
+     */
+    @PutMapping( value = "${configureTweet}" )
+    public ResponseEntity<ApiResponse<Object>> configurePost(
+            @PathVariable( value = "tweetId" , required = true ) String tweetId ,
+            @Valid @RequestBody PostConfigurations postConfigurations ,
+            BindingResult bindingResult
+    ) throws Index.InvalidRequestException {
+        if( bindingResult.hasErrors() ){
+            return CustomResponse.getErrorResponse(
+                    null,
+                    INVALID_REQUEST ,
+                    AppUtil.getErrorsMapFromBindingResults(bindingResult)
+            );
+        }
+        postConfigurations = this.postService.updatePostConfigurations( tweetId , postConfigurations);
+        return CustomResponse.getResponse( postConfigurations , SUCCESS_DONE );
+    }
+
+
+    /*
+     for toggling reaction
+     route => /api/v1/react-tweet => (POST)->body(reactionDTO)
+     */
+    @PostMapping( value = "${toggleReactionTweet}")
+    public ResponseEntity<ApiResponse<Object>> toggleReactionTweet(
+            @Valid @RequestBody ReactionDTO<Post> reactionDTO ,
+            BindingResult bindingResult
+    ) throws Index.InvalidRequestException {
+        if( bindingResult.hasErrors() ){
+            return CustomResponse.getErrorResponse(
+                    null ,
+                    INVALID_REQUEST ,
+                    AppUtil.getErrorsMapFromBindingResults( bindingResult )
+            );
+        }
+
+        Boolean reactionStatus = this.postService.reactTweet(reactionDTO);
+
+        return ( reactionStatus
+                ? CustomResponse.getResponse( null , SUCCESS_DONE )
+                : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null )
+        );
+    }
 
 }
+
+
+
+

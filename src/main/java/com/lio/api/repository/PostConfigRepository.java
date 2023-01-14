@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.lio.api.model.entity.PostConfigurations;
 
-@Repository
+@Repository("postConfigRepository")
 public interface PostConfigRepository extends JpaRepository<PostConfigurations,Integer> {
     
 }
