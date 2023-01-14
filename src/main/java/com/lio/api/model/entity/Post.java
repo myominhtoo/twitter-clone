@@ -2,13 +2,7 @@ package com.lio.api.model.entity;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -48,7 +42,7 @@ public class Post {
     @Column( name = "post_image_uri" )
     private String postImageUri;
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.LAZY )
     @JoinColumn( name = "account_id" )
     private Account createdAccount;
 
@@ -60,5 +54,8 @@ public class Post {
 
     @Column( name = "reaction_count" )
     private Integer reactionCount;
+
+    @Column( name = "is_delete" )
+    private Boolean isDelete;
 
 }

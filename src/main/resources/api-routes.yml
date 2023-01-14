@@ -9,10 +9,11 @@ followAccount : /follow-account
 unfollowAccount: /unfollow-account
 #for post controller
 getTweets: /tweets
+getAccountTweets: /accounts/{accountId}/tweets
 createTweet: /tweets
 editTweet: /tweets/{tweetId}
-deleteTweet: /tweets/{tweetId}
-retweetTweet: /retweet
+deleteAccountTweet: /account/{accountId}/tweets/{tweetId}
+retweetPost: /retweet
 reactTweet: /react-tweet
 configureTweet: /tweets/{tweetId}/configure
 #for comment controller

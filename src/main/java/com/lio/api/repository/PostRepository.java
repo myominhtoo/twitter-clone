@@ -5,8 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.lio.api.model.entity.Post;
 
+import java.util.List;
 
-@Repository
+
+@Repository("postRepository")
 public interface PostRepository extends JpaRepository<Post,String> {
-    
+
+    List<Post> findByCreatedAccountId( String accountId );
+
 }

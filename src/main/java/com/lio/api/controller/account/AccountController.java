@@ -37,7 +37,7 @@ public class AccountController extends ResourceConfig {
     public AccountController(
             AccountService accountService ,
             AccountConfigService accountConfigService
-            ){
+    ){
         this.accountService = accountService;
         this.accountConfigService = accountConfigService;
     }
