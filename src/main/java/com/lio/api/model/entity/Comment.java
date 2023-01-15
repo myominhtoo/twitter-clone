@@ -2,18 +2,15 @@ package com.lio.api.model.entity;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import static com.lio.api.model.constant.Messages.REQUIRED_FIELD;
 
 @Entity
 @Table( name = "comments" )
@@ -26,6 +23,8 @@ public class Comment {
     @GeneratedValue( strategy =  GenerationType.AUTO )
     private Integer id;
 
+    @NotNull( message =  REQUIRED_FIELD )
+    @NotEmpty( message =  REQUIRED_FIELD )
     @Column( name = "content" )
     private String content;
 
@@ -35,6 +34,10 @@ public class Comment {
     @Column( name = "updated_date" )
     private LocalDateTime updatedDate;
 
+    @Column( name = "reaction_count"  )
+    private Integer reactionCount;
+
+    @NotNull( message =  REQUIRED_FIELD )
     @OneToOne
     @JoinColumn( name = "commented_account_id" )
     private Account commentedAccount;
@@ -42,5 +45,10 @@ public class Comment {
     @OneToOne
     @JoinColumn( name = "parent_comment_id" )
     private Comment parentComment;
+
+    @NotNull( message = REQUIRED_FIELD )
+    @ManyToOne( fetch =  FetchType.LAZY )
+    @JoinColumn( name = "post_id" )
+    private Post post;
 
 }

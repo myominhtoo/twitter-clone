@@ -5,7 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.lio.api.model.entity.Comment;
 
-@Repository
+import java.util.List;
+
+@Repository("commentRepository")
 public interface CommentRepository  extends JpaRepository<Comment,Integer> {
-    
+
+    List<Comment> findByPostId( String postId );
+
 }
