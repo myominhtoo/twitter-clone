@@ -45,7 +45,7 @@ public class AccountConfigurations {
     @Column( name = "updated_date" )
     private LocalDateTime updatedDate;
     
-    @OneToOne( fetch = FetchType.LAZY )
+    @OneToOne
     @JoinColumn( name = "account_id" )
     private Account account;
 

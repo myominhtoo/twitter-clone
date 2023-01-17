@@ -12,9 +12,10 @@ getTweets: /tweets
 getAccountTweets: /accounts/{accountId}/tweets
 createTweet: /tweets
 editTweet: /tweets/{tweetId}
-deleteAccountTweet: /account/{accountId}/tweets/{tweetId}
+deleteAccountTweet: /accounts/{accountId}/tweets/{tweetId}
 retweetPost: /retweet
 toggleReactionTweet: /react-tweet
+tweetConfigurations: /tweets/{tweetId}/configurations
 configureTweet: /tweets/{tweetId}/configure
 #for comment controller
 createComment: /comments

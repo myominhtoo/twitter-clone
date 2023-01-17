@@ -26,6 +26,6 @@ public interface PostService {
 
     List<Post> getAccountTweets( String accountId ) throws Index.InvalidRequestException;
 
-    PostConfigurations updatePostConfigurations( String postId , PostConfigurations postConfigurations ) throws Index.InvalidRequestException;
-
+    PostConfigurations updatePostConfigurations(String postId, PostConfigurations postConfigurations)
+            throws Index.InvalidRequestException;
 }

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Comment {
     private String content;
 
     @Column( name = "created_date" )
+    @JsonFormat( shape = JsonFormat.Shape.STRING ,pattern =  "yyyy-MM-dd HH:mm:ss" )
     private LocalDateTime createdDate;
 
     @Column( name = "updated_date" )
@@ -47,7 +49,7 @@ public class Comment {
     private Comment parentComment;
 
     @NotNull( message = REQUIRED_FIELD )
-    @ManyToOne( fetch =  FetchType.LAZY )
+    @ManyToOne
     @JoinColumn( name = "post_id" )
     private Post post;
 

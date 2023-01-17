@@ -158,12 +158,12 @@ public class AccountController extends ResourceConfig {
                 REQUEST_SUCCESS
         );
     }
-
     /*
      for following account
      won't be able to follow for your account self
      route => /api/v1/follow-account (POST)->body(accountFollowDTO)
      */
+
     @PostMapping( value = "${followAccount}" )
     public ResponseEntity<ApiResponse<Object>> postFollowAccount(
             @RequestBody AccountFollowDTO accountFollowDTO

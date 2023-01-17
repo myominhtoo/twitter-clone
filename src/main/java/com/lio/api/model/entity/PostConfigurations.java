@@ -1,56 +1,46 @@
 package com.lio.api.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import static com.lio.api.model.constant.Messages.REQUIRED_FIELD;
 
 @Entity
 @Table( name = "post_configurations" )
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class PostConfigurations {
-    
+
     @Id
-    @GeneratedValue( strategy =  GenerationType.AUTO )
+    @GeneratedValue( strategy =  GenerationType.IDENTITY )
     private Integer id;
 
     @Column( name = "privacy_status" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELD )
     private Integer privacyStatus;
 
-    @Column( name = "retweet_status"  )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
-    private Integer retweetStatus;
-
     @Column( name = "comment_status" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELD )
     private Integer commentStatus;
 
     @Column( name = "reaction_status" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELD )
     private Integer reactionStatus;
 
+    @Column( name = "tweet_status" )
+    @NotNull( message = REQUIRED_FIELD )
+    private Integer tweetStatus;
+
     @Column( name = "created_date" )
+    @JsonFormat( shape = JsonFormat.Shape.STRING ,pattern =  "yyyy-MM-dd HH:mm:ss" )
     private LocalDateTime createdDate;
 
     @Column( name = "updated_date" )

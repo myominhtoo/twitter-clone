@@ -104,9 +104,23 @@ public class CommentServiceImpl implements CommentService {
         AccountReactComment accountReactComment = this.accountReactCommentService
                 .getAccountReactCommentByAccountIdAndCommentId( account.getId() , targetComment.getId() );
         if( accountReactComment != null ){
+            targetComment.setReactionCount(
+                    targetComment.getReactionCount() == null
+                    ? 0 : targetComment.getReactionCount() - 1
+            );
+            this.commentRepository.save( targetComment );
             return this.accountReactCommentService
                     .deleteAccountReactComment(accountReactComment.getId());
         }
+
+        targetComment.setReactionCount(
+                targetComment.getReactionCount() == null
+                ? 1 : targetComment.getReactionCount()  + 1
+        );
+        /*
+         updating reaction count
+         */
+        this.commentRepository.save(targetComment);
 
         accountReactComment = this.accountReactCommentService.createAccountComment(reactionDTO);
         return accountReactComment != null;

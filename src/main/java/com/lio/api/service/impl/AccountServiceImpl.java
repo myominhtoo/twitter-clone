@@ -160,7 +160,7 @@ public class AccountServiceImpl implements AccountService , UserDetailsService {
                         account.getPassword()
                 )
         );
-        return (Account) auth.getPrincipal();
+        return this.accountRepository.findByEmail(account.getEmail());
     }
 
     @Override

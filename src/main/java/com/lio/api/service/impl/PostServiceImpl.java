@@ -7,7 +7,6 @@ import com.lio.api.exception.custom.Index;
 import com.lio.api.model.dto.ReactionDTO;
 import com.lio.api.model.dto.RetweetPostDTO;
 import com.lio.api.model.entity.*;
-import com.lio.api.repository.AccountReactPostRepository;
 import com.lio.api.repository.AccountTweetPostRepository;
 import com.lio.api.repository.PostRepository;
 import com.lio.api.service.interfaces.AccountReactPostService;
@@ -16,7 +15,6 @@ import com.lio.api.service.interfaces.PostConfigService;
 import com.lio.api.service.interfaces.PostService;
 import com.lio.api.util.Generator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import static com.lio.api.model.constant.Messages.INVALID_REQUEST;
@@ -61,10 +59,9 @@ public class PostServiceImpl implements PostService {
         tweet.setUpdatedDate(null);
         tweet.setIsDelete(false);
         tweet.setId(Generator.generateId("post"));
-        tweet = this.postRepository.save(tweet);
+        Post createdTweet  = this.postRepository.save(tweet);
 
-        this.postConfigService.createDefaultPostConfiguration(tweet);
-        return tweet;
+        return createdTweet;
     }
 
     @Override
@@ -73,7 +70,7 @@ public class PostServiceImpl implements PostService {
         Post savedTweet= this.postRepository.findById( tweetId )
                 .orElseThrow(() -> new Index.InvalidRequestException( INVALID_REQUEST ) );
 
-        if( !savedTweet.getCreatedAccount().getId().equals(accountId) ){
+        if( !savedTweet.getCreatedAccount().getId().equals(accountId) || savedTweet.getIsDelete() ){
             throw new Index.InvalidRequestException( INVALID_REQUEST );
         }
 
@@ -128,15 +125,22 @@ public class PostServiceImpl implements PostService {
                 .getReactionByAccountAndPost( fromAccount.getId() , targetPost.getId() );
         if( accountReactPost != null ){
             this.accountReactPostService.removeReactionToPost(accountReactPost.getId());
-            return true;
+            targetPost.setReactionCount(
+                    targetPost.getReactionCount() == null
+                    ? 0 : targetPost.getReactionCount() - 1
+            );
+            return this.postRepository.save(targetPost) != null;
         }
         accountReactPost = new AccountReactPost();
         accountReactPost.setPost(targetPost);
         accountReactPost.setAccount(fromAccount);
 
         accountReactPost = this.accountReactPostService.createReactionToPost(accountReactPost);
-        targetPost.setReactionCount(targetPost.getReactionCount() + 1);
-        return accountReactPost != null;
+        targetPost.setReactionCount(
+                targetPost.getReactionCount() == null
+                ? 1 : targetPost.getReactionCount() + 1
+        );
+        return accountReactPost != null && this.postRepository.save(targetPost) != null;
     }
 
     @Override
@@ -159,7 +163,11 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         targetPost.setUpdatedDate(LocalDateTime.now());
-        targetPost.setTweetCount(targetPost.getTweetCount() + 1);
+        targetPost.setTweetCount(
+                targetPost.getTweetCount() == null
+                        ? 1
+                        : targetPost.getTweetCount() + 1
+        );
 
         return ( this.accountTweetPostRepo.save(accountTweetPost) != null &&
                 this.postRepository.save(targetPost) != null );
@@ -171,6 +179,6 @@ public class PostServiceImpl implements PostService {
         if( !postId.equals(postConfigurations.getPost().getId())){
             throw new Index.InvalidRequestException( INVALID_REQUEST );
         }
-        return this.postConfigService.configurePost(postConfigurations);
+        return this.postConfigService.updatePostConfigurations( postId , postConfigurations );
     }
 }

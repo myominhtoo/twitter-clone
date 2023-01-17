@@ -5,10 +5,10 @@ import com.lio.api.exception.custom.Index;
 import com.lio.api.model.dto.ApiResponse;
 import com.lio.api.model.dto.ReactionDTO;
 import com.lio.api.model.dto.RetweetPostDTO;
-import com.lio.api.model.entity.AccountTweetPost;
 import com.lio.api.model.entity.Post;
 import com.lio.api.model.entity.PostConfigurations;
 import com.lio.api.service.interfaces.AccountService;
+import com.lio.api.service.interfaces.PostConfigService;
 import com.lio.api.service.interfaces.PostService;
 import com.lio.api.util.AppUtil;
 import com.lio.api.util.CustomResponse;
@@ -31,13 +31,17 @@ public class PostController extends ResourceConfig {
 
     private final AccountService accountService;
 
+    private final PostConfigService postConfigService;
+
     @Autowired
     public PostController(
             PostService postService ,
-            AccountService accountService
+            AccountService accountService ,
+            PostConfigService postConfigService
     ){
         this.postService = postService;
         this.accountService = accountService;
+        this.postConfigService = postConfigService;
     }
 
     /*
@@ -57,6 +61,7 @@ public class PostController extends ResourceConfig {
             );
         }
         Post createdTweet = this.postService.createTweet(post);
+        this.postConfigService.createDefaultPostConfigurations(createdTweet);
         return ( createdTweet == null
                  ? CustomResponse.getErrorResponse( null , INVALID_REQUEST , null )
                  : CustomResponse.getResponse( createdTweet ,SUCCESS_DONE )
@@ -159,7 +164,7 @@ public class PostController extends ResourceConfig {
                     AppUtil.getErrorsMapFromBindingResults(bindingResult)
             );
         }
-        postConfigurations = this.postService.updatePostConfigurations( tweetId , postConfigurations);
+        postConfigurations = this.postConfigService.updatePostConfigurations( tweetId , postConfigurations );
         return CustomResponse.getResponse( postConfigurations , SUCCESS_DONE );
     }
 
@@ -186,6 +191,21 @@ public class PostController extends ResourceConfig {
         return ( reactionStatus
                 ? CustomResponse.getResponse( null , SUCCESS_DONE )
                 : CustomResponse.getErrorResponse( null , REQUEST_FAILED , null )
+        );
+    }
+
+    /*
+     for getting tweet configurations
+     */
+    @GetMapping( value = "${tweetConfigurations}" )
+    public ResponseEntity<ApiResponse<Object>> getTweetConfigurations(
+            @PathVariable( value = "tweetId" , required = true ) String tweetId
+    ) throws Index.InvalidRequestException {
+        PostConfigurations postConfigurations = this.postConfigService.getPostConfigurations(tweetId);
+
+        return CustomResponse.getResponse(
+                postConfigurations ,
+                REQUEST_SUCCESS
         );
     }
 

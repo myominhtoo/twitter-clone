@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static com.lio.api.model.constant.Messages.REQUIRED_FIELD;
+
 @Entity
 @Table( name = "posts" )
 @Data
@@ -23,8 +25,8 @@ public class Post {
     private String id;
     
     @Column( name = "title" )
-    @NotNull( message = "${field.required}" )
-    @NotBlank( message =  "${field.required}" )
+    @NotNull( message = REQUIRED_FIELD )
+    @NotBlank( message =  REQUIRED_FIELD )
     private String title;
 
     @Column( name = "description" )
@@ -42,7 +44,7 @@ public class Post {
     @Column( name = "post_image_uri" )
     private String postImageUri;
 
-    @ManyToOne( fetch = FetchType.LAZY )
+    @ManyToOne
     @JoinColumn( name = "account_id" )
     private Account createdAccount;
 
